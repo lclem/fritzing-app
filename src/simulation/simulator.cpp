@@ -206,11 +206,14 @@ void Simulator::simulate() {
 	}
 
 	m_simulator = NgSpiceSimulator::getInstance();
+	std::cout << m_simulator << std::endl;
+
 	try {
 		m_simulator->init();
 	}
 	catch (std::exception& e) {
 		FMessageBox::warning(nullptr, tr("Simulator Error"), tr("An error occurred when starting the simulation."));
+		std::cerr << e.what() << std::endl;
 		stopSimulation();
 		return;
 	}

@@ -57,10 +57,15 @@ NgSpiceSimulator::~NgSpiceSimulator() {
 }
 
 void NgSpiceSimulator::init() {
+
+	std::cout << "Initialising ngspice simulator" << std::endl;
+
 	if (m_isInitialized) return;
 
 	m_library.setFileName("ngspice");
 	m_library.load();
+
+	std::cout << "Loaded ngspice library" << std::endl;
 
 	QStringList libPaths = QStringList({ QCoreApplication::applicationDirPath()
 			})
@@ -68,16 +73,22 @@ void NgSpiceSimulator::init() {
 			+ QStandardPaths::standardLocations(QStandardPaths::DataLocation);
 
 	if( !m_library.isLoaded() ) {         // fallback custom paths
+
+		std::cout << "ngspice library not loaded" << std::endl;
+
 	#ifdef Q_OS_LINUX
 		const QString libName = "libngspice.so";
 	#elif defined Q_OS_MAC
-		const QString libName = "ngspice.dylib";
+		const QString libName = "libngspice.dylib"; // /opt/homebrew/lib/libngspice.dylib
+		libPaths.append("/opt/homebrew/lib/");
 	#elif defined Q_OS_WIN
 		const QString libName = "ngspice-36.dll";
 	#endif
 		for( const auto& path : libPaths ) {
 			QFileInfo library(QString(path + "/" + libName));
 			DebugDialog::debug("Try path " + library.absoluteFilePath());
+			// std::cout << "Try path " << library.absoluteFilePath() << std::endl;
+
 			if(!library.canonicalFilePath().isEmpty()) {
 				m_library.setFileName(library.canonicalFilePath());
 				m_library.load();
@@ -85,6 +96,7 @@ void NgSpiceSimulator::init() {
 					break;
 				} else {
 					DebugDialog::debug("Couldn't load ngspice " + m_library.errorString());
+					// std::cout << "Couldn't load ngspice " << m_library.errorString() << std::endl;
 					throw std::runtime_error( "Error loading ngspice shared library" );
 				}
 			}
@@ -104,6 +116,9 @@ void NgSpiceSimulator::init() {
 
 	m_isBGThreadRunning = true;
 	m_isInitialized = true;
+
+	std::cout << "Done initialising ngspice simulator" << std::endl;
+
 }
 
 bool NgSpiceSimulator::isBGThreadRunning() {
