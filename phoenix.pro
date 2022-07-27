@@ -22,8 +22,10 @@ lessThan(QT_MAJOR_VERSION, 5) {
     error(Fritzing does not build with Qt 4 or earlier. 5.12 is recommended.)
 }
 
-lessThan(QT_MINOR_VERSION, 9) {
-    error(Fritzing does not build with Qt 5.8 or earlier. 5.12 is recommended.)
+equals(QT_MAJOR_VERSION, 5) {
+    lessThan(QT_MINOR_VERSION, 9) {
+        error(Fritzing does not build with Qt 5.8 or earlier. 5.12 is recommended.)
+    }
 }
 
 CONFIG += debug_and_release
@@ -85,16 +87,25 @@ macx {
     Debug:RCC_DIR = $${DEBDIR}
     Debug:UI_DIR = $${DEBDIR}
 
-    #QMAKE_MAC_SDK = macosx10.11            # uncomment/adapt for your version of OSX
-    CONFIG += x86_64 # x86 ppc
+#    #QMAKE_MAC_SDK = macosx10.11            # uncomment/adapt for your version of OSX
+#    CONFIG += x86_64 # x86 ppc
+#    QMAKE_INFO_PLIST = FritzingInfo.plist
+#    #DEFINES += QT_NO_DEBUG                # uncomment this for xcode
+#    LIBS += -lz
+#    LIBS += /usr/lib/libz.dylib
+#    LIBS += /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+#    LIBS += /System/Library/Frameworks/Carbon.framework/Carbon
+#    LIBS += /System/Library/Frameworks/IOKit.framework/Versions/A/IOKit
+#    LIBS += -liconv
+
+    QMAKE_MAC_SDK = macosx11.0            # uncomment/adapt for your version of OSX
+    QMAKE_APPLE_DEVICE_ARCHS=arm64
+    CONFIG += arm64 # x86_64 # x86 ppc
     QMAKE_INFO_PLIST = FritzingInfo.plist
-    #DEFINES += QT_NO_DEBUG                # uncomment this for xcode
-    LIBS += -lz
-    LIBS += /usr/lib/libz.dylib
-    LIBS += /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
-    LIBS += /System/Library/Frameworks/Carbon.framework/Carbon
-    LIBS += /System/Library/Frameworks/IOKit.framework/Versions/A/IOKit
+    LIBS += -lz 
     LIBS += -liconv
+    LIBS += -framework CoreFoundation -framework Carbon -framework IOKit -framework Security
+
 }
 unix {
     !macx { # unix is defined on mac

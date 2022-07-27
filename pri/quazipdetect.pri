@@ -5,27 +5,27 @@ message("Using fritzing quazip detect script.")
 SOURCES += \
     src/zlibdummy.c \
 
-exists($$absolute_path($$PWD/../../quazip_qt5)) {
-        QUAZIPPATH = $$absolute_path($$PWD/../../quazip_qt5)
+exists($$absolute_path($$PWD/../../quazip)) {
+        QUAZIPPATH = $$absolute_path($$PWD/../../quazip)
         message("found quazip in $${QUAZIPPATH}")
     } else {
         error("quazip could not be found.")
     }
 
-message("including $$absolute_path($${QUAZIPPATH}/include/quazip)")
+message("including $$absolute_path($${QUAZIPPATH}/quazip)")
 
 unix:!macx {
     message("including quazip library on linux")
-    INCLUDEPATH += $$absolute_path($${QUAZIPPATH}/include/quazip)
-    LIBS += -L$$absolute_path($${QUAZIPPATH}/lib) -lquazip1-qt5
-    QMAKE_RPATHDIR += $$absolute_path($${QUAZIPPATH}/lib)
+    INCLUDEPATH += $$absolute_path($${QUAZIPPATH}/quazip)
+    LIBS += -L$$absolute_path($${QUAZIPPATH}/build/quazip) -lquazip1-qt5
+    QMAKE_RPATHDIR += $$absolute_path($${QUAZIPPATH}/build/quazip/)
 }
 
 macx {
     message("including quazip library on mac os")
-    INCLUDEPATH += $$absolute_path($${QUAZIPPATH}/include/quazip)
-    LIBS += -L$$absolute_path($${QUAZIPPATH}/lib) -lquazip1-qt5
-    QMAKE_RPATHDIR += $$absolute_path($${QUAZIPPATH}/lib)
+    INCLUDEPATH += $$absolute_path($${QUAZIPPATH}/quazip)
+    LIBS += -L$$absolute_path($${QUAZIPPATH}/build/quazip/) -lquazip1-qt5
+    QMAKE_RPATHDIR += $$absolute_path($${QUAZIPPATH}/build/quazip/)
     LIBS += -lz
 }
 
